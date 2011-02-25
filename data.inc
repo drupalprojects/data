@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Contains class definition for DataTable.

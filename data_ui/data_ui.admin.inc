@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Admin UI functions.

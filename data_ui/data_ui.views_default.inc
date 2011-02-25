@@ -1,5 +1,4 @@
 <?php
-// $Id$
 /**
  * @file
  * Views default views implementation.
