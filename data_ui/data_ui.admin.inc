@@ -17,7 +17,8 @@ function data_ui_view() {
       db_result(db_query('SELECT COUNT(*) FROM {'. db_escape_table($table->get('name')) .'}')),
     );
     if (module_exists('views')) {
-      $row[] = l(t('View'), data_ui_get_default_path($table->get('name')));
+      $path = data_ui_get_default_path($table->get('name'));
+      $row[] = $path ? l(t('View'), $path) : l(t('Edit schema'), 'admin/build/data/edit/' . $table->get('name'));
     }
     $rows[] = $row;
   }
