@@ -1,0 +1,6 @@
+name = Data bulk operations
+descriptions = Provides VBO integration for Data tables.
+package = Data
+dependencies[] = data
+dependencies[] = views_bulk_operations
+core = 6.x
