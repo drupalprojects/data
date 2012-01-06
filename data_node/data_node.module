@@ -41,7 +41,7 @@ function data_node_block($op = 'list', $delta = 0) {
       foreach ($tables as $table) {
         $meta = $table->get('meta');
         if (!empty($meta['data_node']['content_type'])) {
-          $blocks[$table->get('name')]['info'] = t('Data node: Active node form for !table', array('!table' => $table->get('title')));
+          $blocks[$table->get('name')]['info'] = t('Data node: Active node form for @table', array('@table' => $table->get('title')));
         }
       }
       return $blocks;

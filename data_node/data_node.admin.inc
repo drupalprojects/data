@@ -8,7 +8,7 @@
  * Form callback for relating a data table to a node.
  */
 function data_node_settings_form(&$form_state, $table) {
-  drupal_set_title($table->get('title'));
+  drupal_set_title(check_plain($table->get('title')));
 
   $form = array();
   $content_types = array('' => t('None'));

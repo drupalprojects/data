@@ -188,7 +188,7 @@ function data_ui_table_load($table_name) {
  * Title callback.
  */
 function data_ui_title($title) {
-  return t('Edit table !table', array('!table' => $table->get('title')));
+  return t('Edit table @table', array('@table' => $table->get('title')));
 }
 
 /**

@@ -4,7 +4,7 @@
  * Views handler configuration form.
  */
 function data_search_admin_form(&$form_state, $table) {
-  drupal_set_title($table->get('title'));
+  drupal_set_title(check_plain($table->get('title')));
 
   $schema = $table->get('table_schema');
   $meta = $table->get('meta');
