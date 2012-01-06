@@ -242,7 +242,7 @@ function data_ui_get_default_path($name) {
     // @todo: go all the way to the left.
     $path = '';
     $meta = $table->get('meta');
-    if (isset($meta['join']) && is_array($meta['join'])) {
+    if (isset($meta['join']) && is_array($meta['join']) && !empty($meta['join'])) {
       $left_table_name = key($meta['join']);
       if ($left_table = data_get_table($left_table_name)) {
         $path .= $left_table_name .'/';
