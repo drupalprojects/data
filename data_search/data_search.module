@@ -95,7 +95,7 @@ function data_search_update_index() {
       search_index($row->id, $name, $fulltext);
     }
     // Delete orphaned data search records, no nodeapi to take care of this as it occurs.
-    db_query("DELETE sd, si, snl FROM {search_dataset} sd LEFT JOIN {{$name}} dt ON sd.type = '{$name}' AND sd.sid = dt.{$base_field} LEFT JOIN {search_index} si ON sd.sid = si.sid AND sd.type = si.type LEFT JOIN {search_node_links} snl ON sd.sid = snl.sid AND sd.type = snl.type WHERE dt.{$base_field} IS NULL");
+    db_query("DELETE sd, si, snl FROM {search_dataset} sd LEFT JOIN {{$name}} dt ON sd.type = '{$name}' AND sd.sid = dt.{$base_field} LEFT JOIN {search_index} si ON sd.sid = si.sid AND sd.type = si.type LEFT JOIN {search_node_links} snl ON sd.sid = snl.sid AND sd.type = snl.type WHERE sd.type = '{$name}' AND dt.{$base_field} IS NULL");
   }
 }
 
