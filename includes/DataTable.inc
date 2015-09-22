@@ -161,6 +161,22 @@ class DataTable {
   }
 
   /**
+   * Remove a table from Data module's management, ie unadopt it.
+   *
+   * Uses the $name property of the object to determine which database table to
+   * adopt.
+   *
+   * @return
+   *   TRUE if the table was successfully disowned; FALSE if the query failed,
+   *   or if Schema isn't available.
+   */
+  public function disown() {
+    $table = array($this->name);
+    return db_query("DELETE FROM {data_tables} WHERE name IN ("
+      . db_placeholders($table, 'varchar') . ");", $table);
+  }
+
+  /**
    * Determine whether a table is defined.
    *
    * @return
