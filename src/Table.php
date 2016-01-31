@@ -232,7 +232,7 @@ class Table {
    *   and the value is the unserialized value that this property should attain.
    */
   public function update($properties) {
-    _data_override($this->name);
+    //_data_override($this->name);
     $properties['name'] = $this->name;
     if (drupal_write_record('data_tables', $properties, 'name')) {
       foreach ($properties as $key => $value) {

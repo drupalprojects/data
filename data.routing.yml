@@ -1,0 +1,9 @@
+entity.data_table.collection:
+  path: '/admin/structure/datatable'
+  defaults:
+  # Calls the list controller, defined in the annotation of the contact entity.
+    _entity_list: 'data_table'
+    _title: 'Data tables'
+  requirements:
+  # Checks for permission directly.
+    _permission: 'administer data tables'

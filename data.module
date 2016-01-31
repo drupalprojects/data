@@ -234,6 +234,8 @@ function data_export($name, $indent = '') {
  *  Whether to reset CTools' static cache.
  */
 function _data_load_table($name = NULL, $reset = FALSE) {
+  // @todo: implement this.
+  return FALSE;
   ctools_include('export');
   if ($reset) {
     drupal_static_reset('ctools_export_load_object');
