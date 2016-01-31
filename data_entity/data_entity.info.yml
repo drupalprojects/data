@@ -1,8 +1,0 @@
-name: Data entity
-type: module
-description: Defines data tables as entity types.
-package: Data
-dependencies:
-  - data
-  - data_ui
-core: 8.x
