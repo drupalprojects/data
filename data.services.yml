@@ -1,3 +1,0 @@
-services:
-  data.table:
-    class: Drupal\data\TableFactory
