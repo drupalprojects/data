@@ -1,0 +1,12 @@
+data.data_table_config.*:
+  type: config_entity
+  label: 'Data Table config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    uuid:
+      type: string
