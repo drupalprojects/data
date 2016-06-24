@@ -25,7 +25,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *   admin_permission = "administer site configuration",
  *   entity_keys = {
  *     "id" = "id",
- *     "label" = "label",
+ *     "label" = "title",
  *     "uuid" = "uuid"
  *   },
  *   links = {

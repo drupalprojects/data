@@ -4,9 +4,17 @@ data.data_table_config.*:
   mapping:
     id:
       type: string
-      label: 'ID'
-    label:
+      label: 'Machine name'
+    title:
       type: label
-      label: 'Label'
+      label: 'Title'
+      description: Human readable table name
     uuid:
       type: string
+    table_schema:
+      type: text
+      serialize: TRUE
+    meta:
+      type: text
+      nullable: TRUE
+      description: Meta information about the table and its fields.
