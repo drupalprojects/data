@@ -3,6 +3,8 @@
 namespace Drupal\data\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\Core\Database\Database;
+use Drupal\data\DataException;
 
 /**
  * Defines the Data Table entity.
@@ -40,17 +42,42 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 class TableConfig extends ConfigEntityBase implements TableConfigInterface {
 
   /**
-   * The Data Table ID.
-   *
-   * @var string
+   * {@inheritdoc}
    */
-  protected $id;
+  public function exists() {
+    return Database::getConnection()->schema()->tableExists($this->id());
+  }
 
   /**
-   * The Data Table label.
-   *
-   * @var string
+   * {@inheritdoc}
    */
-  protected $label;
-
+  public function createTable() {
+    if ($this->exists()) {
+      throw new DataException(t('Table @table already exists',
+        array('@table' => $this->id())));
+    }
+    $table_definition = array(
+      'description' => t('Automatically created by data module on @time',
+        array('@time' => date('Y/m/d H:i', REQUEST_TIME))),
+      'fields' => array(),
+    );
+    $primary_keys = array();
+    foreach ($this->table_schema as $field) {
+      $table_definition['fields'][$field['name']] = array(
+        'description' => $field['label'],
+        'type' => $field['type'],
+        'size' => $field['size'],
+        'unsigned' => $field['unsigned'],
+      );
+      if ($field['primary']) {
+        $primary_keys[] = $field['name'];
+      }
+    }
+    // @todo: non-primary index definition.
+    if ($primary_keys) {
+      $table_definition['primary_keys'] = $primary_keys;
+    }
+    Database::getConnection()->schema()->createTable($this->id(),
+      $table_definition);
+  }
 }

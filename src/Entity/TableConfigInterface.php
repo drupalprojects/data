@@ -9,5 +9,18 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  */
 interface TableConfigInterface extends ConfigEntityInterface {
 
-  // Add get/set methods for your configuration properties here.
+  /**
+   * Check if data table exists.
+   *
+   * @return bool
+   */
+  public function exists();
+
+  /**
+   * Create data table.
+   *
+   * @param array $table_definition
+   * @return mixed
+   */
+  public function createTable();
 }

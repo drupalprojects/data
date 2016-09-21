@@ -21,8 +21,15 @@ class TableConfigForm extends EntityForm {
 
     $data_table_config = $this->entity;
 
-    $number_of_fields = $form_state->getValue('field_num');
-    $this->step = $number_of_fields ? 1 : 0;
+    if ($data_table_config->isNew()) {
+      $number_of_fields = $form_state->getValue('field_num');
+      $this->step = $number_of_fields ? 1 : 0;
+    }
+    // No need to ask number of columns for existing field.
+    else {
+      $number_of_fields = count($data_table_config->table_schema);
+      $this->step = 1;
+    }
 
     // Multistep form.
     if (!$this->step) {
@@ -59,11 +66,20 @@ class TableConfigForm extends EntityForm {
     else {
       // Second form, ask for the database field names.
       $form['help']['#markup'] = t('Define the fields of the new table.');
-      $form['fields'] = array(
-        '#tree' => TRUE,
+      $form['table_schema'] = array(
+        '#type' => 'table',
+        '#header' => array(
+          t('Name'),
+          t('Label'),
+          t('Type'),
+          t('Size'),
+          t('Unsigned'),
+          t('Index'),
+          t('Primary key'),
+        ),
       );
       for ($i = 0; $i < $number_of_fields; $i++) {
-        $form['fields']['field_' . $i] = $this->fieldForm(TRUE);
+        $form['table_schema'][$i] = $this->fieldForm($i, TRUE);
       }
       $form['actions']['submit']['#value'] = t('Create');
     }
@@ -74,7 +90,10 @@ class TableConfigForm extends EntityForm {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    if ($form_state->getValue('field_num')) {
+    if ($this->step) {
+      parent::submitForm($form, $form_state);
+    }
+    else {
       $form_state->setRebuild();
     }
   }
@@ -89,6 +108,10 @@ class TableConfigForm extends EntityForm {
     }
     $data_table_config = $this->entity;
     $status = $data_table_config->save();
+
+    if (!$data_table_config->exists()) {
+      $data_table_config->createTable();
+    }
 
     switch ($status) {
       case SAVED_NEW:
@@ -109,35 +132,57 @@ class TableConfigForm extends EntityForm {
    * Helper function that generates a form snippet for defining a field.
    *
    * formerly known as _data_ui_field_form().
+   *
+   * @param int $index
+   * Index of column definition in table schema.
+   * @param bool $required.
    */
-  protected function fieldForm($required = FALSE) {
+  protected function fieldForm($index, $required = FALSE) {
+    $defaults = array_fill_keys(array(
+      'name',
+      'label',
+      'type',
+      'size',
+      'unsigned',
+      'index',
+      'primary',
+    ), '');
+    $current = isset($this->entity->table_schema[$index])
+      ? $this->entity->table_schema[$index] : $defaults;
     $form = array();
     $form['#tree'] = TRUE;
     $form['name'] = array(
       '#type' => 'textfield',
       '#size' => 20,
       '#required' => $required,
+      '#default_value' => $current['name'],
     );
     $form['label'] = array(
       '#type' => 'textfield',
       '#size' => 20,
+      '#default_value' => $current['label'],
     );
     $form['type'] = array(
       '#type' => 'select',
       '#options' => data_get_field_types(),
+      '#default_value' => $current['type'],
     );
     $form['size'] = array(
       '#type' => 'select',
       '#options' => data_get_field_sizes(),
+      '#default_value' => $current['size'],
     );
     $form['unsigned'] = array(
       '#type' => 'checkbox',
+      '#default_value' => $current['unsigned'],
     );
     $form['index'] = array(
       '#type' => 'checkbox',
+      '#default_value' => $current['index'],
     );
     $form['primary'] = array(
       '#type' => 'checkbox',
+      '#default_value' => $current['primary'],
     );
     return $form;
   }

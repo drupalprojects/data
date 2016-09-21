@@ -4,5 +4,4 @@ description: Admin UI for Data Module
 package: Data
 dependencies:
   - data
-  - schema
 core: 8.x

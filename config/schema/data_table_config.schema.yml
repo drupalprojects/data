@@ -12,7 +12,7 @@ data.data_table_config.*:
     uuid:
       type: string
     table_schema:
-      type: text
+      type: array
       serialize: TRUE
     meta:
       type: text
