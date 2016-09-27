@@ -1,7 +1,0 @@
-name: Data Admin UI
-type: module
-description: Admin UI for Data Module
-package: Data
-dependencies:
-  - data
-core: 8.x
