@@ -75,15 +75,10 @@ class TableConfig extends ConfigEntityBase implements TableConfigInterface {
     }
     // @todo: non-primary index definition.
     if ($primary_keys) {
-      $table_definition['primary_keys'] = $primary_keys;
+      $table_definition['primary key'] = $primary_keys;
     }
-    try {
-      Database::getConnection()->schema()->createTable($this->id(),
-        $table_definition);
-    }
-    catch (\Exception $e) {
-      return false;
-    }
+    Database::getConnection()->schema()->createTable($this->id(),
+      $table_definition);
   }
 
   /**
@@ -99,4 +94,14 @@ class TableConfig extends ConfigEntityBase implements TableConfigInterface {
     }
     return parent::save();
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function delete() {
+    if (Database::getConnection()->schema()->dropTable($this->id())) {
+      parent::delete();
+    }
+  }
+
 }

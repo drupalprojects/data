@@ -93,7 +93,8 @@ class TableConfigForm extends EntityForm {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     if ($this->entity->isNew() && $this->entity->exists()) {
-      form_set_err
+      $form_state->setErrorByName('id', t('Table @name already exists.',
+        array('@name' => $this->entity->id())));
     }
     parent::validateForm($form, $form_state);
   }
