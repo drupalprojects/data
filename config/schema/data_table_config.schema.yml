@@ -1,4 +1,4 @@
-data.data_table_config.*:
+data.table_config.*:
   type: config_entity
   label: 'Data Table config'
   mapping:

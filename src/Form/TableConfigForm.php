@@ -73,6 +73,7 @@ class TableConfigForm extends EntityForm {
           t('Label'),
           t('Type'),
           t('Size'),
+          t('Length'),
           t('Unsigned'),
           t('Index'),
           t('Primary key'),
@@ -81,9 +82,20 @@ class TableConfigForm extends EntityForm {
       for ($i = 0; $i < $number_of_fields; $i++) {
         $form['table_schema'][$i] = $this->fieldForm($i, TRUE);
       }
-      $form['actions']['submit']['#value'] = t('Create');
+      $form['actions']['submit']['#value'] = $this->entity->isNew()
+        ? t('Create') : t('Update');
     }
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    if ($this->entity->isNew() && $this->entity->exists()) {
+      form_set_err
+    }
+    parent::validateForm($form, $form_state);
   }
 
   /**
@@ -107,10 +119,13 @@ class TableConfigForm extends EntityForm {
       return;
     }
     $data_table_config = $this->entity;
-    $status = $data_table_config->save();
 
-    if (!$data_table_config->exists()) {
-      $data_table_config->createTable();
+    try {
+      $status = $data_table_config->save();
+    }
+    catch (\Exception $e) {
+      drupal_set_message($e->getMessage(), 'error');
+      return;
     }
 
     switch ($status) {
@@ -143,6 +158,7 @@ class TableConfigForm extends EntityForm {
       'label',
       'type',
       'size',
+      'length',
       'unsigned',
       'index',
       'primary',
@@ -171,6 +187,18 @@ class TableConfigForm extends EntityForm {
       '#type' => 'select',
       '#options' => data_get_field_sizes(),
       '#default_value' => $current['size'],
+    );
+    $form['length'] = array(
+      '#type' => 'textfield',
+      '#size' => 10,
+      '#default_value' => $current['length'],
+      '#states' => array(
+        'visible' => [
+          ["#edit-table-schema-$index-type" => ['value' => 'varchar']],
+          ["#edit-table-schema-$index-type" => ['value' => 'char']],
+          ["#edit-table-schema-$index-type" => ['value' => 'text']],
+        ],
+      ),
     );
     $form['unsigned'] = array(
       '#type' => 'checkbox',

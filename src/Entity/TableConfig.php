@@ -4,6 +4,7 @@ namespace Drupal\data\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Database\SchemaObjectExistsException;
 use Drupal\data\DataException;
 
 /**
@@ -11,7 +12,7 @@ use Drupal\data\DataException;
  *
  * @ConfigEntityType(
  *   id = "data_table_config",
- *   label = @Translation("Data Table"),
+ *   label = @Translation("Table Configuration"),
  *   handlers = {
  *     "list_builder" = "Drupal\data\TableConfigListBuilder",
  *     "form" = {
@@ -23,7 +24,7 @@ use Drupal\data\DataException;
  *       "html" = "Drupal\data\TableConfigHtmlRouteProvider",
  *     },
  *   },
- *   config_prefix = "data_table_config",
+ *   config_prefix = "table_config",
  *   admin_permission = "administer site configuration",
  *   entity_keys = {
  *     "id" = "id",
@@ -52,10 +53,6 @@ class TableConfig extends ConfigEntityBase implements TableConfigInterface {
    * {@inheritdoc}
    */
   public function createTable() {
-    if ($this->exists()) {
-      throw new DataException(t('Table @table already exists',
-        array('@table' => $this->id())));
-    }
     $table_definition = array(
       'description' => t('Automatically created by data module on @time',
         array('@time' => date('Y/m/d H:i', REQUEST_TIME))),
@@ -69,6 +66,9 @@ class TableConfig extends ConfigEntityBase implements TableConfigInterface {
         'size' => $field['size'],
         'unsigned' => $field['unsigned'],
       );
+      if ($field['length']) {
+        $table_definition['fields'][$field['name']]['length'] = $field['length'];
+      }
       if ($field['primary']) {
         $primary_keys[] = $field['name'];
       }
@@ -77,7 +77,26 @@ class TableConfig extends ConfigEntityBase implements TableConfigInterface {
     if ($primary_keys) {
       $table_definition['primary_keys'] = $primary_keys;
     }
-    Database::getConnection()->schema()->createTable($this->id(),
-      $table_definition);
+    try {
+      Database::getConnection()->schema()->createTable($this->id(),
+        $table_definition);
+    }
+    catch (\Exception $e) {
+      return false;
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save() {
+    if ($this->isNew()) {
+      if ($this->exists()) {
+        throw new SchemaObjectExistsException(t('Table @name already exists.',
+          array('@name' => $this->id())));
+      }
+      $this->createTable();
+    }
+    return parent::save();
   }
 }
