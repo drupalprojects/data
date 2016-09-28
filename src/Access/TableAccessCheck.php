@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\data\Access\TableAccessCheck.
- */
-
 namespace Drupal\user\Access;
 
 use Drupal\Core\Access\AccessResult;

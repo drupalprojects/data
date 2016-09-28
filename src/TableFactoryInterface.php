@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\data\TableFactoryInterface.
- */
-
 namespace Drupal\data;
 
 /**

@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains class definition for DataTable.
- */
 
 namespace Drupal\data;
 

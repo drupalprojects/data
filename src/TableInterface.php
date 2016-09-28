@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\data\TableInterface.
- */
 
 namespace Drupal\data;
 

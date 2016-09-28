@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\data\TableFactory.
- */
 
 namespace Drupal\data;
 
