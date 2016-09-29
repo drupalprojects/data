@@ -8,15 +8,11 @@
  * Load all data tables.
  */
 function data_get_all_tables($reset = FALSE) {
-  $tables = array();
-  if ($tables = _data_load_table(NULL, $reset)) {
-    foreach ($tables as $table_name => $table) {
-      if ($table = data_get_table($table_name)) {
-        $tables[$table_name] = $table;
-      }
-    }
+  $storage = \Drupal::entityTypeManager()->getStorage('data_table_config');
+  if ($reset) {
+    $storage->resetCache();
   }
-  return $tables;
+  return $storage->loadMultiple();
 }
 
 /**
@@ -33,18 +29,22 @@ function data_get_all_tables($reset = FALSE) {
  * @param $title
  *   A natural title for the table.
  *
- * @return
+ * @return \Drupal\data\Entity\TableConfigInterface
  *   A DataTable object if one could be created, FALSE otherwise.
  */
 function data_create_table($name, $schema, $title = NULL) {
-  $table = \Drupal::service('data.table')->get($name);
-  if ($table->create($schema)) {
-    if (!empty($title)) {
-      $table->update(array('title' => $title));
-    }
-    return $table;
+  $storage = \Drupal::entityTypeManager()->getStorage('data_table_config');
+  /** @var \Drupal\data\Entity\TableConfigInterface $table */
+  $table = $storage->load($name);
+  if (!$table || !$table->exists()) {
+    $table = $storage->create(array('id' => $name, 'table_schema' => $schema));
+    $table->save();
   }
-  return FALSE;
+  if ($title) {
+    $table->title = $title;
+    $table->save();
+  }
+  return $table;
 }
 
 /**
