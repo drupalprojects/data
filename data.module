@@ -6,6 +6,9 @@
 
 /**
  * Load all data tables.
+ *
+ * @return array
+ *   Array of TableConfigInterface objects.
  */
 function data_get_all_tables($reset = FALSE) {
   $storage = \Drupal::entityTypeManager()->getStorage('data_table_config');
@@ -45,6 +48,30 @@ function data_create_table($name, $schema, $title = NULL) {
     $table->save();
   }
   return $table;
+}
+
+
+/**
+ * Get a table if it exists.
+ *
+ * @see DataTable class.
+ *
+ * @param $name
+ *   Unique name of the table.
+ *
+ * @return
+ *   A unique DataTable object if defined, FALSE otherwise.
+ *
+ * Note: In some circumstances, a table may be defined while it does not exist
+ * in the database. In these cases, data_get_table() would still return a valid
+ * DataTable object.
+ */
+function data_get_table($name) {
+  $table = DataTable::instance($name);
+  if ($table->defined()) {
+    return $table;
+  }
+  return FALSE;
 }
 
 /**
